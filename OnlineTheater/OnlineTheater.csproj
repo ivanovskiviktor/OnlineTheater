@@ -168,14 +168,33 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\DirectorsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PlaysController.cs" />
+    <Compile Include="Controllers\TheatresController.cs" />
+    <Compile Include="Enums\Language.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012241804431_initial.cs" />
+    <Compile Include="Migrations\202012241804431_initial.Designer.cs">
+      <DependentUpon>202012241804431_initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012241817326_initial2.cs" />
+    <Compile Include="Migrations\202012241817326_initial2.Designer.cs">
+      <DependentUpon>202012241817326_initial2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AddToTheatre.cs" />
+    <Compile Include="Models\Director.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Play.cs" />
+    <Compile Include="Models\PlayReservation.cs" />
+    <Compile Include="Models\ReservePlay.cs" />
+    <Compile Include="Models\Theatre.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -235,6 +254,21 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Directors\Create.cshtml" />
+    <Content Include="Views\Directors\Delete.cshtml" />
+    <Content Include="Views\Directors\Details.cshtml" />
+    <Content Include="Views\Directors\Edit.cshtml" />
+    <Content Include="Views\Directors\Index.cshtml" />
+    <Content Include="Views\Plays\Create.cshtml" />
+    <Content Include="Views\Plays\Delete.cshtml" />
+    <Content Include="Views\Plays\Details.cshtml" />
+    <Content Include="Views\Plays\Edit.cshtml" />
+    <Content Include="Views\Plays\Index.cshtml" />
+    <Content Include="Views\Theatres\Create.cshtml" />
+    <Content Include="Views\Theatres\Delete.cshtml" />
+    <Content Include="Views\Theatres\Details.cshtml" />
+    <Content Include="Views\Theatres\Edit.cshtml" />
+    <Content Include="Views\Theatres\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -251,6 +285,14 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202012241804431_initial.resx">
+      <DependentUpon>202012241804431_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012241817326_initial2.resx">
+      <DependentUpon>202012241817326_initial2.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

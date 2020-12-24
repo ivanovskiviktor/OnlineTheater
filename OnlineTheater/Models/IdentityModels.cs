@@ -29,5 +29,11 @@ namespace OnlineTheater.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<OnlineTheater.Models.Director> Directors { get; set; }
+
+        public System.Data.Entity.DbSet<OnlineTheater.Models.Play> Plays { get; set; }
+
+        public System.Data.Entity.DbSet<OnlineTheater.Models.Theatre> Theatres { get; set; }
     }
 }
