@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using OnlineTheater.Models;
 
 namespace OnlineTheater.Controllers
@@ -15,12 +16,14 @@ namespace OnlineTheater.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Theatres
+        [Authorize(Roles = ("Admin,TheatreAgent,User"))]
         public ActionResult Index()
         {
             return View(db.Theatres.ToList());
         }
 
         // GET: Theatres/Details/5
+        [Authorize(Roles = ("Admin,TheatreAgent,User"))]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -36,6 +39,7 @@ namespace OnlineTheater.Controllers
         }
 
         // GET: Theatres/Create
+        [Authorize(Roles = ("Admin,TheatreAgent"))]
         public ActionResult Create()
         {
             return View();
@@ -45,6 +49,7 @@ namespace OnlineTheater.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = ("Admin,TheatreAgent"))]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "TheatreId,Name,Address")] Theatre theatre)
         {
@@ -59,6 +64,7 @@ namespace OnlineTheater.Controllers
         }
 
         // GET: Theatres/Edit/5
+        [Authorize(Roles = ("Admin,TheatreAgent"))]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -77,6 +83,7 @@ namespace OnlineTheater.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = ("Admin,TheatreAgent"))]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "TheatreId,Name,Address")] Theatre theatre)
         {
@@ -90,27 +97,20 @@ namespace OnlineTheater.Controllers
         }
 
         // GET: Theatres/Delete/5
-        public ActionResult Delete(int? id)
+        [Authorize(Roles = ("Admin,TheatreAgent"))]
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             Theatre theatre = db.Theatres.Find(id);
-            if (theatre == null)
-            {
-                return HttpNotFound();
-            }
-            return View(theatre);
-        }
 
-        // POST: Theatres/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Theatre theatre = db.Theatres.Find(id);
+            var playreservation = db.PlayReservations.Where(u => u.theatre.TheatreId == id).ToList();
+
+            foreach (var reservation in playreservation)
+            {
+                db.PlayReservations.Remove(reservation);
+            }
+
             db.Theatres.Remove(theatre);
+
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -123,5 +123,65 @@ namespace OnlineTheater.Controllers
             }
             base.Dispose(disposing);
         }
+
+        //GET: AddToLibrary
+        [Authorize(Roles = ("Admin, TheatreAgent"))]
+        public ActionResult AddToTheatre(int id)
+        {
+            var model = new AddToTheatre();
+            model.selectedTheatre = id;
+            model.Plays = db.Plays.ToList();
+            var theatre = db.Theatres.Find(model.selectedTheatre);
+            ViewBag.TheatreName = theatre.Name;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = ("Admin, TheatreAgent"))]
+        public ActionResult AddToTheatre(AddToTheatre model)
+        {
+            var theatre = db.Theatres.Find(model.selectedTheatre);
+            var play = db.Plays.Find(model.selectedPlay);
+            theatre.Plays.Add(play);
+            db.SaveChanges();
+
+            return RedirectToAction("Index", "Theatres");
+        }
+
+        //GET: ReserveBook
+        public ActionResult ReservePlay()
+        {
+            var model = new ReservePlay();
+            model.allTheatres = db.Theatres.ToList();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult ReservePlay(int allTheatres, int play)
+        {
+            PlayReservation reservation = new PlayReservation();
+            reservation.theatre = db.Theatres.Where(m => m.TheatreId == allTheatres).First();
+            reservation.selectedPlay = db.Plays.Where(m => m.PlayId == play).First();
+            var userID = User.Identity.GetUserId();
+            reservation.user = db.Users.Where(m => m.Id == userID).First();
+            db.Users.Where(m => m.Id == userID).First().reservedPlays.Add(reservation);
+
+            db.PlayReservations.Add(reservation);
+            db.SaveChanges();
+            return RedirectToAction("Index", "Home");
+        }
+
+        // POST: Libraries/ReserveBook/5
+        [HttpPost]
+        public ActionResult GetPlayById(int theatreId)
+        {
+            List<Play> plays = new List<Play>();
+            plays = db.Theatres.Where(m => m.TheatreId == theatreId).First().Plays.ToList();
+            SelectList playsList = new SelectList(plays, "PlayId", "PlayName", 0);
+            return Json(playsList);
+        }
+
     }
 }

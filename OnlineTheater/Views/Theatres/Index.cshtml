@@ -4,36 +4,92 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<div class="container" style="padding:30px 0px 15px 0px">
+    @if (!User.IsInRole("User"))
+    {
+        <div style="padding-bottom:20px;">
+            @Html.ActionLink("Add Theatre", "Create", null, new { @class = "btn btn-primary" })
+        </div>
+    }
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Address)
-        </th>
-        <th></th>
-    </tr>
+    <table class="table" id="theatresTable">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Address)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Address)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.TheatreId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.TheatreId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.TheatreId })
-        </td>
-    </tr>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+
+                        @if (!User.IsInRole("User"))
+                        {
+                            <button style="border:none;" type="button" onclick="location.href='@Url.Action("AddToTheatre", "Theatres", new { id = item.TheatreId })'">
+                                <img style="height:15px; width:15px;" src="~/Images/addBook.jpg">
+                            </button>
+
+                            <button style="border:none;" type="button" onclick="location.href='@Url.Action("Edit", "Theatres", new { id = item.TheatreId })'">
+                                <img style="height:15px; width:15px;" src="~/Images/edit.png">
+                            </button>
+
+                        }
+
+                        <button style="border:none" type="button" onclick="location.href='@Url.Action("Details", "Theatres", new { id = item.TheatreId })'">
+                            <img style="height:15px; width:15px;" src="~/Images/view-details-32.png">
+                        </button>
+
+                        @if (!User.IsInRole("User"))
+                        {
+
+                            <button style="border:none" class="js-delete" data-id="@item.TheatreId">
+                                <img style="height:15px; width:15px;" src="~/Images/remove.jpg">
+                            </button>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@section scripts{
+
+    <script>
+
+        var table = $("#theatresTable").DataTable();
+        $("#theatresTable.js-delete").click(function () {
+            var button = $(this);
+            bootbox.confirm("Are you sure you want to delete this theatre?",
+                function (result) {
+                    if (result) {
+                        $.ajax({
+                            method: "GET",
+                            url: "/Theatres/Delete/" + button.attr("data-id"),
+                            success: function () {
+                                table.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                    }
+                });
+        });
+
+    </script>
+
 }
-
-</table>

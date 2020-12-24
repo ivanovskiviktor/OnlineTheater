@@ -1,0 +1,33 @@
+﻿@model IEnumerable<OnlineTheater.Models.PlayReservation>
+@{
+    ViewBag.Title = "MyReservations";
+}
+<div class="container" style="padding:30px 0px 15px 0px">
+    <h3>Your Reservations :</h3>
+    <table class="table" id="reservationTable">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayName("Theatre Name")
+                </th>
+                <th>
+                    @Html.DisplayName("Plays")
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.theatre.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.selectedPlay.PlayName)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

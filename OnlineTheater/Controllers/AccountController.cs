@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using OnlineTheater.Models;
@@ -15,14 +17,16 @@ namespace OnlineTheater.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
         public AccountController()
         {
+
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,9 +38,9 @@ namespace OnlineTheater.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -59,6 +63,90 @@ namespace OnlineTheater.Controllers
         {
             ViewBag.ReturnUrl = returnUrl;
             return View();
+        }
+
+        // GET: /Account/MyReservations
+        [HttpGet]
+        public ActionResult MyReservations()
+        {
+            var userID = User.Identity.GetUserId();
+            List<PlayReservation> reservations = db.PlayReservations.Where(m => m.user.Id == userID).ToList();
+
+
+            return View(reservations);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = ("Admin"))]
+        public ActionResult AddRole()
+        {
+            var userRoles = new List<AddRole>();
+            var context = new ApplicationDbContext();
+            var userStore = new UserStore<ApplicationUser>(context);
+            var userManager = new UserManager<ApplicationUser>(userStore);
+
+            var allroles = new List<string>();
+            foreach (var i in context.Roles.ToList())
+            {
+                if (i.Name != "Admin")
+                {
+                    allroles.Add(i.Name);
+                }
+            }
+
+            //Get all the usernames
+            foreach (var user in userStore.Users)
+            {
+                if (!UserManager.IsInRole(user.Id, "Admin"))
+                {
+                    var r = new AddRole
+                    {
+                        UserName = user.UserName
+                    };
+                    userRoles.Add(r);
+                }
+            }
+            //Get all the Roles for our users
+            foreach (var user in userRoles)
+            {
+                user.RoleNames = userManager.GetRoles(userStore.Users.First(s => s.UserName == user.UserName).Id);
+                user.AllRoles = allroles;
+            }
+
+            return View(userRoles);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = ("Admin"))]
+        public ActionResult AddRole(List<AddRole> allUsers)
+        {
+            var context = new ApplicationDbContext();
+            var userStore = new UserStore<ApplicationUser>(context);
+            var userManager = new UserManager<ApplicationUser>(userStore);
+
+            foreach (var user in allUsers)
+            {
+                var tempUser = UserManager.FindByEmail(user.UserName);
+                if (userManager.IsInRole(tempUser.Id, user.selectedRole))
+                {
+                    UserManager.AddToRole(tempUser.Id, user.selectedRole);
+                }
+                else
+                {
+                    if (user.selectedRole == "User")
+                    {
+                        userManager.RemoveFromRole(tempUser.Id, "TheatreAgent");
+                        UserManager.AddToRole(tempUser.Id, user.selectedRole);
+                    }
+                    else
+                    {
+                        userManager.RemoveFromRole(tempUser.Id, "User");
+                        UserManager.AddToRole(tempUser.Id, user.selectedRole);
+                    }
+                }
+
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         //
@@ -120,7 +208,7 @@ namespace OnlineTheater.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -151,18 +239,17 @@ namespace OnlineTheater.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber, Address = model.Address };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    UserManager.AddToRole(user.Id, "User");
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);

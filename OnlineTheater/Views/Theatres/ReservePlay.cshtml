@@ -1,0 +1,58 @@
+﻿@model OnlineTheater.Models.ReservePlay
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post">
+    <div class="container" style="padding:30px 0px 15px 0px">
+        <h2 style="font-weight:bold">
+            Reserve a Play
+        </h2>
+        @using (Html.BeginForm("ReservePlay", "Theatres"))
+        {
+            <h4 style="padding-top: 25px; ">Choose in which theatre you want to make reservation:</h4>
+            @Html.DropDownListFor(m => m.allTheatres, new SelectList(Model.allTheatres, "TheatreId", "Name"), new { @id = "ddlstate", @style = "width:200px;", @onchange = "javascript:GetCity(this.value);" })
+            <br />
+            <br />
+            <h4>Choose which play you would like to reserve:</h4>
+            <select id="ddlcity" name="play" style="width: 200px">
+            </select>
+            <div style="padding-top:25px">
+                <button type="submit" class="btn btn-primary">Make reservation</button>
+            </div>
+        }
+
+    </div>
+</form>
+
+
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+<script language="javascript" type="text/javascript">
+    function GetCity(_stateId) {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        $("#ddlcity").html(procemessage).show();
+        var url = '@Url.Action("GetBookById", "Libraries")';
+
+        $.ajax({
+            url: url,
+            data: { libraryId: _stateId },
+            cache: false,
+            type: "POST",
+            success: function (data) {
+                var markup = "<option value='0'>Select Book</option>";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
+                }
+                $("#ddlcity").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+
+    }
+</script>

@@ -185,8 +185,21 @@
     <Compile Include="Migrations\202012241817326_initial2.Designer.cs">
       <DependentUpon>202012241817326_initial2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202012242102136_initial3.cs" />
+    <Compile Include="Migrations\202012242102136_initial3.Designer.cs">
+      <DependentUpon>202012242102136_initial3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012242152009_initial4.cs" />
+    <Compile Include="Migrations\202012242152009_initial4.Designer.cs">
+      <DependentUpon>202012242152009_initial4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012242256156_initial5.cs" />
+    <Compile Include="Migrations\202012242256156_initial5.Designer.cs">
+      <DependentUpon>202012242256156_initial5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AddRole.cs" />
     <Compile Include="Models\AddToTheatre.cs" />
     <Compile Include="Models\Director.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -269,6 +282,10 @@
     <Content Include="Views\Theatres\Details.cshtml" />
     <Content Include="Views\Theatres\Edit.cshtml" />
     <Content Include="Views\Theatres\Index.cshtml" />
+    <Content Include="Views\Account\AddRole.cshtml" />
+    <Content Include="Views\Theatres\AddToTheatre.cshtml" />
+    <Content Include="Views\Theatres\ReservePlay.cshtml" />
+    <Content Include="Views\Account\MyReservations.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -292,6 +309,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202012241817326_initial2.resx">
       <DependentUpon>202012241817326_initial2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012242102136_initial3.resx">
+      <DependentUpon>202012242102136_initial3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012242152009_initial4.resx">
+      <DependentUpon>202012242152009_initial4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012242256156_initial5.resx">
+      <DependentUpon>202012242256156_initial5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
