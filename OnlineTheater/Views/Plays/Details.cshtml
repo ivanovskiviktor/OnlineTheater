@@ -3,56 +3,58 @@
 @{
     ViewBag.Title = "Details";
 }
+    <div class="container" style="padding:30px 0px 15px 0px; font-size:medium">
+        <h2>Details</h2>
 
-<h2>Details</h2>
+        <div>
+            <h4>Play</h4>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.PlayName)
+                </dt>
 
-<div>
-    <h4>Play</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.PlayName)
-        </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.PlayName)
+                </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.PlayName)
-        </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Director)
+                </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Director)
-        </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Director)
+                </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Director)
-        </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Price)
+                </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Price)
+                </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Price)
-        </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Publisher)
+                </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Publisher)
-        </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Publisher)
+                </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Publisher)
-        </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Language)
+                </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Language)
-        </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Language)
+                </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Language)
-        </dd>
+            </dl>
+        </div>
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.PlayId }, new { @class = "btn btn-primary" }) |
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-primary" })
+        </p>
 
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.PlayId }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+        </div>
