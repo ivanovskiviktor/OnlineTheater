@@ -13,17 +13,18 @@ namespace OnlineTheater.Controllers
 {
     public class TheatresController : Controller
     {
+
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Theatres
-        [Authorize(Roles = ("Admin,TheatreAgent,User"))]
+        [Authorize(Roles = ("Admin, TheatreAgent, User"))]
         public ActionResult Index()
         {
             return View(db.Theatres.ToList());
         }
 
         // GET: Theatres/Details/5
-        [Authorize(Roles = ("Admin,TheatreAgent,User"))]
+        [Authorize(Roles = ("Admin, TheatreAgent, User"))]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -39,17 +40,17 @@ namespace OnlineTheater.Controllers
         }
 
         // GET: Theatres/Create
-        [Authorize(Roles = ("Admin,TheatreAgent"))]
+        [Authorize(Roles = ("Admin, TheatreAgent"))]
         public ActionResult Create()
         {
             return View();
         }
 
         // POST: Theatres/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = ("Admin,TheatreAgent"))]
+        [Authorize(Roles = ("Admin, TheatreAgent"))]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "TheatreId,Name,Address")] Theatre theatre)
         {
@@ -64,7 +65,7 @@ namespace OnlineTheater.Controllers
         }
 
         // GET: Theatres/Edit/5
-        [Authorize(Roles = ("Admin,TheatreAgent"))]
+        [Authorize(Roles = ("Admin, TheatresAgent"))]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -80,10 +81,10 @@ namespace OnlineTheater.Controllers
         }
 
         // POST: Theatres/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = ("Admin,TheatreAgent"))]
+        [Authorize(Roles = ("Admin, TheatreAgent"))]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "TheatreId,Name,Address")] Theatre theatre)
         {
@@ -97,14 +98,14 @@ namespace OnlineTheater.Controllers
         }
 
         // GET: Theatres/Delete/5
-        [Authorize(Roles = ("Admin,TheatreAgent"))]
+        [Authorize(Roles = ("Admin, TheatreAgent"))]
         public ActionResult Delete(int id)
         {
             Theatre theatre = db.Theatres.Find(id);
 
-            var playreservation = db.PlayReservations.Where(u => u.theatre.TheatreId == id).ToList();
+            var playReservations = db.PlayReservations.Where(u => u.theatre.TheatreId == id).ToList();
 
-            foreach (var reservation in playreservation)
+            foreach (var reservation in playReservations)
             {
                 db.PlayReservations.Remove(reservation);
             }
@@ -124,7 +125,7 @@ namespace OnlineTheater.Controllers
             base.Dispose(disposing);
         }
 
-        //GET: AddToLibrary
+        //GET: AddToTheatre
         [Authorize(Roles = ("Admin, TheatreAgent"))]
         public ActionResult AddToTheatre(int id)
         {
@@ -149,7 +150,7 @@ namespace OnlineTheater.Controllers
             return RedirectToAction("Index", "Theatres");
         }
 
-        //GET: ReserveBook
+        //GET: ReservePlay
         public ActionResult ReservePlay()
         {
             var model = new ReservePlay();
@@ -173,8 +174,8 @@ namespace OnlineTheater.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // POST: Libraries/ReserveBook/5
-        [HttpPost]
+        // POST: Theatres/ReservePlay/5
+        [HttpPost]  
         public ActionResult GetPlayById(int theatreId)
         {
             List<Play> plays = new List<Play>();

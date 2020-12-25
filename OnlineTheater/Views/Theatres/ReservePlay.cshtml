@@ -35,15 +35,15 @@
     function GetCity(_stateId) {
         var procemessage = "<option value='0'> Please wait...</option>";
         $("#ddlcity").html(procemessage).show();
-        var url = '@Url.Action("GetBookById", "Libraries")';
+        var url = '@Url.Action("GetPlayById", "Theatres")';
 
         $.ajax({
             url: url,
-            data: { libraryId: _stateId },
+            data: { theatreId: _stateId },
             cache: false,
             type: "POST",
             success: function (data) {
-                var markup = "<option value='0'>Select Book</option>";
+                var markup = "<option value='0'>Select Play</option>";
                 for (var x = 0; x < data.length; x++) {
                     markup += "<option value=" + data[x].Value + ">" + data[x].Text + "</option>";
                 }

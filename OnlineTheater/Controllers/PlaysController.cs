@@ -10,19 +10,20 @@ using OnlineTheater.Models;
 
 namespace OnlineTheater.Controllers
 {
+    [Authorize]
     public class PlaysController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Plays
-        [Authorize(Roles = ("Admin,TheatreAgent,User"))]
+        [Authorize(Roles = ("Admin, TheatreAgent, User"))]
         public ActionResult Index()
         {
             return View(db.Plays.ToList());
         }
 
         // GET: Plays/Details/5
-        [Authorize(Roles = ("Admin,TheatreAgent,User"))]
+        [Authorize(Roles = ("Admin, TheatreAgent, User"))]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -38,7 +39,7 @@ namespace OnlineTheater.Controllers
         }
 
         // GET: Plays/Create
-        [Authorize(Roles = ("Admin,TheatreAgent"))]
+        [Authorize(Roles = ("Admin, TheatreAgent"))]
         public ActionResult Create()
         {
             return View();
@@ -48,7 +49,7 @@ namespace OnlineTheater.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = ("Admin,TheatreAgent"))]
+        [Authorize(Roles = ("Admin, TheatreAgent"))]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "PlayId,PlayName,Director,Price,Publisher,Language")] Play play)
         {
@@ -63,7 +64,7 @@ namespace OnlineTheater.Controllers
         }
 
         // GET: Plays/Edit/5
-        [Authorize(Roles = ("Admin,TheatreAgent"))]
+        [Authorize(Roles = ("Admin, TheatreAgent"))]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -82,7 +83,7 @@ namespace OnlineTheater.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize(Roles = ("Admin,TheatreAgent"))]
+        [Authorize(Roles = ("Admin, TheatreAgent"))]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "PlayId,PlayName,Director,Price,Publisher,Language")] Play play)
         {
@@ -95,7 +96,7 @@ namespace OnlineTheater.Controllers
             return View(play);
         }
 
-        // GET: Books/Delete/5
+        // GET: Plays/Delete/5
         [Authorize(Roles = ("Admin, TheatreAgent"))]
         public ActionResult Delete(int id)
         {
@@ -123,4 +124,3 @@ namespace OnlineTheater.Controllers
         }
     }
 }
-
