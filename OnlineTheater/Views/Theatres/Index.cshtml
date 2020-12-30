@@ -40,7 +40,7 @@
                         @if (!User.IsInRole("User"))
                         {
                             <button style="border:none;" type="button" onclick="location.href='@Url.Action("AddToTheatre", "Theatres", new { id = item.TheatreId })'">
-                                <img style="height:15px; width:15px;" src="~/Images/addBook.jpg">
+                                <img style="height:15px; width:15px;" src="~/Images/addPlay.jpg">
                             </button>
 
                             <button style="border:none;" type="button" onclick="location.href='@Url.Action("Edit", "Theatres", new { id = item.TheatreId })'">
