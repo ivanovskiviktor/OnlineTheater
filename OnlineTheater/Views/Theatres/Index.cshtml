@@ -74,7 +74,7 @@
     <script>
 
         var table = $("#theatresTable").DataTable();
-        $("#theatresTable.js-delete").click(function () {
+        $("#theatresTable .js-delete").click(function () {
             var button = $(this);
             bootbox.confirm("Are you sure you want to delete this theatre?",
                 function (result) {
@@ -91,5 +91,4 @@
         });
 
     </script>
-
 }
