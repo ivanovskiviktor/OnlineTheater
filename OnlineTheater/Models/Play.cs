@@ -13,6 +13,7 @@ namespace OnlineTheater.Models
         [Key]
         public int PlayId { get; set; }
         [Required]
+        [Display(Name ="Name")]
         public string PlayName { get; set; }
         [Required]
         public string Director { get; set; }
